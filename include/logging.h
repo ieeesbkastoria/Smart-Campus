@@ -28,6 +28,9 @@
  * @tparam Args Variadic list of format arguments.
  * @param fmt A format string stored in flash memory (use F("...")).
  * @param args The format arguments to apply.
+ *
+ * @notes This logging function consumes a lot of system resources and thus
+ * should be used scarcely.
  */
 template <typename... Args>
 auto logf(const __FlashStringHelper *fmt, Args &&...args) -> void {
