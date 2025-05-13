@@ -4,4 +4,7 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
+void sendHexData(String hexString);
+void readSerialData();
+
 #endif MMWAVE_H_
