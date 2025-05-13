@@ -25,6 +25,6 @@ void readSerialData() {
   while (mySerial.available() > 0) {
     char incomingByte = mySerial.read();
     // old serial print Serial.print(incomingByte);
-    logf(F("mmWave : ", incomingByte));
+    logf(F("/n mmWave : ", incomingByte));
   }
 }
