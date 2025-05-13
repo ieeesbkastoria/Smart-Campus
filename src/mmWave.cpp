@@ -24,6 +24,7 @@ void readSerialData() {
   // Read and print data from software serial
   while (mySerial.available() > 0) {
     char incomingByte = mySerial.read();
-    Serial.print(incomingByte);
+    // old serial print Serial.print(incomingByte);
+    logf(F("mmWave : ", incomingByte));
   }
 }
