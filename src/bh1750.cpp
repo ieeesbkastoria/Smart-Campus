@@ -1,4 +1,4 @@
-#include "bh1750.h"
+#include "../include/bh1750.h"
 
 #include <Arduino.h>
 #include <Wire.h>
@@ -55,6 +55,6 @@ uint16_t computeLx(void){
 		uint16_t lxCount = ( (data[0] << 8 ) | data[1] ) / 1.2;
 	}
 
-	logf(F("\n BH1750: ", lxCount, " Lx")); // Use logging function from logging.cpp
+	logf(F("\n BH1750: %d Lx", lxCount); // Use logging function from logging.cpp
 	return lxCount;
 }
