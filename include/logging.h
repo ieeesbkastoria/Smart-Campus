@@ -37,40 +37,40 @@ auto logf(const __FlashStringHelper *fmt) -> void;
  */
 template <typename... Args>
 auto logf(const __FlashStringHelper *fmt, Args... args) -> void {
-    constexpr std::size_t BUF_SIZE = 128;
-    char buffer[BUF_SIZE];
+  constexpr std::size_t BUF_SIZE = 128;
+  char buffer[BUF_SIZE];
 
-    // Convert __FlashStringHelper to char* for formatting
-    PGM_P p = reinterpret_cast<PGM_P>(fmt);
+  // Convert __FlashStringHelper to char* for formatting
+  PGM_P p = reinterpret_cast<PGM_P>(fmt);
 
-    // Copy the format string from flash to RAM
-    char format[BUF_SIZE];
-    size_t i = 0;
-    while (i < BUF_SIZE - 1) {
-        unsigned char c = pgm_read_byte(p++);
-        format[i++] = c;
-        if (c == 0)
-            break;
+  // Copy the format string from flash to RAM
+  char format[BUF_SIZE];
+  size_t i = 0;
+  while (i < BUF_SIZE - 1) {
+    unsigned char c = pgm_read_byte(p++);
+    format[i++] = c;
+    if (c == 0)
+      break;
+  }
+  format[BUF_SIZE - 1] = 0; // Ensure null termination
+
+  // Format the string with the arguments
+  int result = snprintf(buffer, BUF_SIZE, format, args...);
+
+  // Print the prefix
+  Serial.print(F("SmartCampus Log | "));
+
+  // Write the formatted string
+  if (result >= 0) {
+    if (result >= BUF_SIZE) { // Message was truncated
+      Serial.write(buffer, BUF_SIZE - 1);
+      Serial.println(" [truncated]");
+    } else {
+      Serial.println(buffer);
     }
-    format[BUF_SIZE - 1] = 0; // Ensure null termination
-
-    // Format the string with the arguments
-    int result = snprintf(buffer, BUF_SIZE, format, args...);
-
-    // Print the prefix
-    Serial.print(F("SmartCampus Log | "));
-
-    // Write the formatted string
-    if (result >= 0) {
-        if (result >= BUF_SIZE) { // Message was truncated
-            Serial.write(buffer, BUF_SIZE - 1);
-            Serial.println(" [truncated]");
-        } else {
-            Serial.println(buffer);
-        }
-    } else { // Encoding error
-        Serial.println(F("Error formatting output"));
-    }
+  } else { // Encoding error
+    Serial.println(F("Error formatting output"));
+  }
 }
 
 #endif // LOGGING_H_
