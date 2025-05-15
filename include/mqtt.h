@@ -6,7 +6,6 @@
 #include <WiFi.h>
 #include <functional>
 #include <map>
-#include <string>
 
 /**
  * @brief A class to handle MQTT connections and messaging for ESP32

@@ -1,3 +1,7 @@
 .pio
 .vscode
 .env
+
+# Lsp configs
+compile_commands.json
+.ccls-cache/
