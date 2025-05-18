@@ -3,39 +3,41 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-void initialise(void){
 /*
 	This function does some basic configuration
-	and initialisation of the sensor.
+	and initialisation of the sensor. In case of
+	an error, report it back
 */
+bool initBH1750(){
 
 	Wire.beginTransmission(I2CADDR);
-	Wire.write(0x10); // Resolution time between lux reading (120ms)
-	Wire.endTransmission();
+	Wire.write(RESMODEFREQ);
+	uint8_t status = Wire.endTransmission();
+
+	return (status == 0);
 }
 
-int getSensorData(byte* data){
+
 /*
 	This function gets the raw data from the sensor
 	and places it in a buffer (here, a pointer to the
 	buffer). It should be 2 bytes of data, according
 	to the documentation.
 */
+int getSensorData(uint8_t* data){
 
 	int byteCount = 0; // Works as an index too
-	Wire.beginTransmission(I2CADDR);
-	Wire.requestFrom(I2CADDR, 2);
+	Wire.requestFrom(I2CADDR, EXPECTEDBYTES);
 
-	while(Wire.available()){ // While there is data (a byte) to read
+	while( ( byteCount < EXPECTEDBYTES ) && Wire.available() ){ // While there is data (a byte) to read
 		data[byteCount] = Wire.read(); // place it into the buffer at position i
 		byteCount++; // and increase the index ( => + data amount)
 	}
 
-	Wire.endTransmission();
 	return byteCount;
 }
 
-uint16_t computeLx(void){
+
 /*
 	This function computes the Lux (Lx) amount
 	of light present in a space, using the data
@@ -43,18 +45,22 @@ uint16_t computeLx(void){
 	and returns it to the place that called this
 	func.
 */
+uint16_t computeLx(){
+
 	byte buffer[2];
-	getSensorData(buffer);
+	uint16_t lxCount;
+
 
 	/*
 	   Check if we got the right amount of bytes.
 	   In the dfRobot documentation, the count is 2
 	*/
 
-	if( 2 == getSensorData() ){
-		uint16_t lxCount = ( (data[0] << 8 ) | data[1] ) / 1.2;
+	if( 2 == getSensorData(buffer) ){
+		lxCount = ( (buffer[0] << 8 ) | buffer[1] ) / 1.2;
 	}
 
-	logf(F("\n BH1750: %d Lx", lxCount); // Use logging function from logging.cpp
+	// Unfortunately I cannot get this source file to compile with the logging function included.
+	//logf(F("\n BH1750 Lux Reading: %d"), lxCount); // Use logging function from logging.cpp
 	return lxCount;
 }
