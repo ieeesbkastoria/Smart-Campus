@@ -47,7 +47,7 @@ int getSensorData(uint8_t* data){
 */
 uint16_t computeLx(){
 
-	byte buffer[2];
+	uint8_t buffer[2];
 	uint16_t lxCount;
 
 
