@@ -4,9 +4,14 @@
 #include <Wire.h>
 #include <Arduino.h>
 #define I2CADDR 0x23 // I2C Address for sensor
+#define RESMODEFREQ 0x10 // Resolution time between sensor reading (120ms)
+#define EXPECTEDBYTES 2
 
-void initialise(void); // Function to init sensor with
-int getSensorData(byte* data); // Get raw sensor data func
-uint16_t computeLx(void); // Compute Lx with some computations
+// Function to init sensor with
+bool initBH1750();
+// Get raw sensor data func
+int getSensorData(uint8_t* data);
+// Compute Lx with some computations
+uint16_t computeLx();
 
-#ifndef
+#endif
