@@ -12,5 +12,6 @@
 
 void sendHexData(String hexString);
 void readAndProcessSensorLines();
+void init_mmWave();
 
 #endif
