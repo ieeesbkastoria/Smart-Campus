@@ -67,3 +67,20 @@ void readAndProcessSensorLines()
         }
     }
 }
+
+void init_mmWave()
+{
+    // start counting millis() from the moment the program starts
+    unsigned long startAttemptTime = millis();
+
+    // Start Serial2 for the HMMD Sensor
+    Serial2.begin(115200, SERIAL_8N1, RX2_PIN, TX2_PIN);
+    Serial.println("Serial2 Initialized on RX:" + String(RX2_PIN) + ", TX:" + String(TX2_PIN));
+
+    // Send the command to the sensor (only done once)
+    String hex_to_send = "FDFCFBFA0800120000006400000004030201";
+    Serial.println("Sending initial command over Serial2...");
+    sendHexData(hex_to_send);
+    Serial.println("Initial command sent.");
+    Serial.println("Waiting for sensor readings...");
+}
