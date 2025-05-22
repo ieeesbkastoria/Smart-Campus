@@ -39,3 +39,31 @@ void sendHexData(String hexString)
     // Send the bytes to the sensor via Serial2
     Serial2.write(hexBytes, byteCount);
 }
+
+/*
+ Reads data from the mmWave sensor and processes it line by line.
+ Currently extracts distance information from lines starting with "Range ".
+ */
+
+void readAndProcessSensorLines()
+{
+    // Get all available data from sensor
+    while (Serial2.available() > 0)
+    {
+        // Read a complete line and remove whitespace
+        String line = Serial2.readStringUntil('\n');
+        line.trim();
+
+        // Process lines containing range information
+        if (line.startsWith(RANGE_PREFIX))
+        {
+            // Extract the distance value (after "Range " prefix)
+            String distanceStr = line.substring(strlen(RANGE_PREFIX));
+            int distance = distanceStr.toInt();
+
+            Serial.print("Detected Distance: ");
+            Serial.print(distance);
+            Serial.println(" cm");
+        }
+    }
+}
