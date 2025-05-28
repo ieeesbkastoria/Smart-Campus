@@ -11,7 +11,7 @@
 #include <Arduino.h>
 
 void sendHexData(String hexString);
-void readAndProcessSensorLines();
+int readAndProcessSensorLines();
 void init_mmWave();
 
 #endif
