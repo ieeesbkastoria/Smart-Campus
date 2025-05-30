@@ -8,8 +8,9 @@
 #define DOOR_SENSOR_PIN 13
 
 // Function to initialize the door sensor
-void initDoor() {};
+void initDoor();
+
 // Function to read the door sensor state
-bool readDoor() {};
+bool readDoor();
 
 #endif
