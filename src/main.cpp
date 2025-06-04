@@ -2,8 +2,8 @@
 #include <WiFi.h>
 
 // WiFi Credentials
-constexpr char *ssid = "yourSSID";
-constexpr char *password = "yourPassword";
+constexpr char *ssid = "i";
+constexpr char *password = "i";
 
 // MQTT Broker Settings
 constexpr char *mqttServer = "your.broker.address";
