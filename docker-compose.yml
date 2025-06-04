@@ -1,0 +1,26 @@
+services:
+  node-red:
+    image: nodered/node-red:latest
+    environment:
+      - TZ=Europe/Athens
+    ports:
+      - "1880:1880"
+    volumes:
+      - node-red-data:/data
+    restart: always
+
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    ports:
+      - "1883:1883"       # MQTT
+      - "9001:9001"       #WebSocket (used for communication with NodeRed)
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+    restart: always
+
+volumes:
+  node-red-data:
+  mosquitto_data:
+  mosquitto_log:
