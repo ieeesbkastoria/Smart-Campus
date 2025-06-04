@@ -13,7 +13,7 @@ services:
     image: eclipse-mosquitto:latest
     ports:
       - "1883:1883"       # MQTT
-      - "9001:9001"       
+      - "9001:9001"       #WebSocket (used for communication with NodeRed)
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
       - mosquitto_data:/mosquitto/data
