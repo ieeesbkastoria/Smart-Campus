@@ -9,5 +9,20 @@ services:
       - node-red-data:/data
     restart: always
 
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    ports:
+      - "1883:1883"       # MQTT
+      - "9001:9001"       
+    volumes:
+      - mosquitto_config:/mosquitto/config
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+    restart: always
+
 volumes:
   node-red-data:
+
+  mosquitto_config:
+  mosquitto_data:
+  mosquitto_log:
