@@ -9,7 +9,7 @@
         an error, report it back
 */
 bool initBH1750() {
-
+  Wire.begin(SDAPIN, SCLPIN);
   Wire.beginTransmission(I2CADDR);
   Wire.write(RESMODEFREQ);
   uint8_t status = Wire.endTransmission();
