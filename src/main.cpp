@@ -1,5 +1,6 @@
 #include "../include/DoorSensor.h"
 #include "../include/bh1750.h"
+#include "../include/mmWave.h"
 #include <PubSubClient.h>
 #include <WiFi.h>
 
@@ -10,6 +11,11 @@ constexpr char *password = (char *)"i";
 // MQTT Broker Settings
 constexpr char *mqttServer = (char *)"your.broker.address";
 const int mqttPort = 1883;
+
+// MQTT Topics Macros
+#define ESP32_STATUS_TOPIC "esp32/status"
+#define DOOR_TOPIC "Door"
+#define LUX_TOPIC "Lx"
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -32,6 +38,7 @@ void setupWiFi() {
 void setupSensors() {
   initDoor();
   initBH1750();
+  init_mmWave();
 }
 
 void reconnectMQTT() {
@@ -39,8 +46,7 @@ void reconnectMQTT() {
     Serial.print("Connecting to MQTT...");
     if (client.connect("ESP32Client")) {
       Serial.println("connected!");
-      client.publish("esp32/status", "Hello from ESP32");
-      client.subscribe("esp32/control");
+      client.publish(ESP32_STATUS_TOPIC, "ESP32 Connected");
     } else {
       Serial.print("Failed, rc=");
       Serial.print(client.state());
@@ -64,6 +70,6 @@ void loop() {
   }
   client.loop();
 
-  client.publish("Lx", String(computeLx()).c_str());
-  client.publish("Door", readDoor() ? "Open" : "Closed");
+  client.publish(LUX_TOPIC, String(computeLx()).c_str());
+  client.publish(DOOR_TOPIC, readDoor() ? "Open" : "Closed");
 }
