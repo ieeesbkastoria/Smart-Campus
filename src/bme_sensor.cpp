@@ -3,7 +3,7 @@
 #include <Wire.h>
 
 // Define the BME680 object
-static Adafruit_BME680 bme; // Uses I2C
+Adafruit_BME680 bme; // Uses I2C
 
 bool bmeInit() {
   Serial.begin(115200);
