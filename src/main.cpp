@@ -9,7 +9,7 @@ constexpr char *ssid = (char *)"i";
 constexpr char *password = (char *)"i";
 
 // MQTT Broker Settings
-constexpr char *mqttServer = (char *)"your.broker.address";
+constexpr char *mqttServer = (char *)"192.168.69.2";
 const int mqttPort = 1883;
 
 // MQTT Topics Macros
@@ -21,7 +21,7 @@ const int mqttPort = 1883;
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-void setupWiFi() {
+static void setupWiFi() {
   delay(100);
   Serial.print("Connecting to WiFi...");
   WiFi.begin(ssid, password);
@@ -36,13 +36,13 @@ void setupWiFi() {
   Serial.println(WiFi.localIP());
 }
 
-void setupSensors() {
+static void setupSensors() {
   initDoor();
   initBH1750();
   init_mmWave();
 }
 
-void reconnectMQTT() {
+static void reconnectMQTT() {
   while (!client.connected()) {
     Serial.print("Connecting to MQTT...");
     if (client.connect("ESP32Client")) {
