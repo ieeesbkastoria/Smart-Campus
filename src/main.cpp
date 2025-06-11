@@ -1,5 +1,6 @@
 #include "../include/DoorSensor.h"
 #include "../include/bh1750.h"
+#include "../include/bme_sensor.h"
 #include "../include/mmWave.h"
 #include <PubSubClient.h>
 #include <WiFi.h>
@@ -40,6 +41,7 @@ static void setupSensors() {
   initDoor();
   initBH1750();
   init_mmWave();
+  bmeInit();
 }
 
 static void reconnectMQTT() {
@@ -61,7 +63,6 @@ void setup() {
   Serial.begin(115200);
   setupWiFi();
   client.setServer(mqttServer, mqttPort);
-
   setupSensors();
 }
 
