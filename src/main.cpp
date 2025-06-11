@@ -1,12 +1,13 @@
+#include "../include/bh1750.h"
 #include <PubSubClient.h>
 #include <WiFi.h>
 
 // WiFi Credentials
-constexpr char *ssid = "i";
-constexpr char *password = "i";
+constexpr char *ssid = (char *)"i";
+constexpr char *password = (char *)"i";
 
 // MQTT Broker Settings
-constexpr char *mqttServer = "your.broker.address";
+constexpr char *mqttServer = (char *)"your.broker.address";
 const int mqttPort = 1883;
 
 WiFiClient espClient;
@@ -47,6 +48,8 @@ void setup() {
   Serial.begin(115200);
   setupWiFi();
   client.setServer(mqttServer, mqttPort);
+
+  initBH1750();
 }
 
 void loop() {
@@ -54,4 +57,6 @@ void loop() {
     reconnectMQTT();
   }
   client.loop();
+
+  client.publish("Lx", String(computeLx()).c_str());
 }
