@@ -1,3 +1,4 @@
+#include "bme_sensor.h"
 #include <PubSubClient.h>
 #include <WiFi.h>
 
@@ -47,6 +48,7 @@ void setup() {
   Serial.begin(115200);
   setupWiFi();
   client.setServer(mqttServer, mqttPort);
+  bmeInit();
 }
 
 void loop() {
@@ -54,4 +56,5 @@ void loop() {
     reconnectMQTT();
   }
   client.loop();
+  bmeMeasure();
 }
