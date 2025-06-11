@@ -1,3 +1,4 @@
+#include "../include/DoorSensor.h"
 #include "../include/bh1750.h"
 #include <PubSubClient.h>
 #include <WiFi.h>
@@ -28,6 +29,11 @@ void setupWiFi() {
   Serial.println(WiFi.localIP());
 }
 
+void setupSensors() {
+  initDoor();
+  initBH1750();
+}
+
 void reconnectMQTT() {
   while (!client.connected()) {
     Serial.print("Connecting to MQTT...");
@@ -49,7 +55,7 @@ void setup() {
   setupWiFi();
   client.setServer(mqttServer, mqttPort);
 
-  initBH1750();
+  setupSensors();
 }
 
 void loop() {
@@ -59,4 +65,5 @@ void loop() {
   client.loop();
 
   client.publish("Lx", String(computeLx()).c_str());
+  client.publish("Door", readDoor() ? "Open" : "Closed");
 }
