@@ -16,6 +16,7 @@ const int mqttPort = 1883;
 #define ESP32_STATUS_TOPIC "esp32/status"
 #define DOOR_TOPIC "Door"
 #define LUX_TOPIC "Lx"
+#define MOTION_TOPIC "Motion"
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -72,4 +73,8 @@ void loop() {
 
   client.publish(LUX_TOPIC, String(computeLx()).c_str());
   client.publish(DOOR_TOPIC, readDoor() ? "Open" : "Closed");
+  client.publish(MOTION_TOPIC, String(readAndProcessSensorLines()).c_str());
+
+  // Temp delay for testing
+  delay(1000);
 }
