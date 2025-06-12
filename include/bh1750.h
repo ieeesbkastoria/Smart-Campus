@@ -3,11 +3,14 @@
 
 #include <Wire.h>
 #include <Arduino.h>
+
 #define I2CADDR 0x23 // I2C Address for sensor
 #define RESMODEFREQ 0x10 // Set sensor operation mode - Continuous High-Res, 120ms time window between readings, 1lx precision
 #define EXPECTEDBYTES 2  // Byte amount that we expect to read from the bus
 #define SCLPIN 5 // Pin on ESP32 that the sensor's S(erial)CL(ock) Pin is connected to
 #define SDAPIN 4 // Pin on ESP32 that the sensor's S(erial)DA(ta) Pin is connected to
+
+TwoWire i2cBH1750 = TwoWire(1); // Create separate I2C Wire object and use Bus 1 for its communication
 
 // Function to init sensor with
 bool initBH1750();

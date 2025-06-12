@@ -9,10 +9,10 @@
         an error, report it back
 */
 bool initBH1750() {
-  Wire.begin(SDAPIN, SCLPIN); // Start Wire at specified pins (see header file if needed to be customised)
-  Wire.beginTransmission(I2CADDR);
-  Wire.write(RESMODEFREQ); // Write specified mode to sensor (see header file)
-  uint8_t status = Wire.endTransmission(); // End transmission and get the return status
+  i2cBH1750.begin(SDAPIN, SCLPIN); // Start Wire at specified pins (see header file if needed to be customised)
+  i2cBH1750.beginTransmission(I2CADDR);
+  i2cBH1750.write(RESMODEFREQ); // Write specified mode to sensor (see header file)
+  uint8_t status = i2cBH1750.endTransmission(); // End transmission and get the return status
 
   return (status == 0); // If everything went well, this should return TRUE
 }
@@ -26,12 +26,11 @@ bool initBH1750() {
 int getSensorData(uint8_t *data) {
 
   int byteCount = 0; // Works as an index too
-  Wire.requestFrom(I2CADDR, EXPECTEDBYTES); // Get bytes from bus
+  i2cBH1750.requestFrom(I2CADDR, EXPECTEDBYTES); // Get bytes from bus
 
-  while ((byteCount < EXPECTEDBYTES) &&
-         Wire.available()) {       // While there is data (a byte) to read
-    data[byteCount] = Wire.read(); // place it into the buffer at position [byteCount]
-    byteCount++;                   // and increase the index ( => + data amount)
+  while ((byteCount < EXPECTEDBYTES) && i2cBH1750.available()) { 	// While there is data (a byte) to read
+    data[byteCount] = i2cBH1750.read(); 				// place it into the buffer at position [byteCount]
+    byteCount++;                   				// and increase the index ( => + data amount)
   }
 
   return byteCount;
