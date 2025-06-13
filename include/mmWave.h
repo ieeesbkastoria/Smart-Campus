@@ -3,7 +3,7 @@
 
 // Define the pins for our secondary hardware serial (Serial2)
 #define RX2_PIN 19
-#define TX2_PIN 20
+#define TX2_PIN 15
 
 // Define range prefix to identify lines from the sensor
 #define RANGE_PREFIX "Range "
