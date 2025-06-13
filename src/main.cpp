@@ -18,6 +18,10 @@ const int mqttPort = 1883;
 #define DOOR_TOPIC "Door"
 #define LUX_TOPIC "Lx"
 #define MOTION_TOPIC "Motion"
+#define TEMP_TOPIC "Temperature"
+#define PRESSURE_TOPIC "Pressure"
+#define HUMIDITY_TOPIC "Humidity"
+#define GAS_TOPIC "Gas"
 
 WiFiClient espClient;
 PubSubClient client(espClient);
