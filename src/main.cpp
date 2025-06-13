@@ -1,18 +1,32 @@
+#include "../include/DoorSensor.h"
+#include "../include/bh1750.h"
+#include "../include/bme_sensor.h"
+#include "../include/mmWave.h"
 #include <PubSubClient.h>
 #include <WiFi.h>
 
 // WiFi Credentials
-constexpr char *ssid = "i";
-constexpr char *password = "i";
+constexpr char *ssid = (char *)"i";
+constexpr char *password = (char *)"i";
 
 // MQTT Broker Settings
-constexpr char *mqttServer = "your.broker.address";
+constexpr char *mqttServer = (char *)"192.168.69.2";
 const int mqttPort = 1883;
+
+// MQTT Topics Macros
+#define ESP32_STATUS_TOPIC "esp32/status"
+#define DOOR_TOPIC "Door"
+#define LUX_TOPIC "Lx"
+#define MOTION_TOPIC "Motion"
+#define TEMP_TOPIC "Temperature"
+#define PRESSURE_TOPIC "Pressure"
+#define HUMIDITY_TOPIC "Humidity"
+#define GAS_TOPIC "Gas"
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-void setupWiFi() {
+static void setupWiFi() {
   delay(100);
   Serial.print("Connecting to WiFi...");
   WiFi.begin(ssid, password);
@@ -27,13 +41,19 @@ void setupWiFi() {
   Serial.println(WiFi.localIP());
 }
 
-void reconnectMQTT() {
+static void setupSensors() {
+  initDoor();
+  initBH1750();
+  init_mmWave();
+  initBME680();
+}
+
+static void reconnectMQTT() {
   while (!client.connected()) {
     Serial.print("Connecting to MQTT...");
     if (client.connect("ESP32Client")) {
       Serial.println("connected!");
-      client.publish("esp32/status", "Hello from ESP32");
-      client.subscribe("esp32/control");
+      client.publish(ESP32_STATUS_TOPIC, "ESP32 Connected");
     } else {
       Serial.print("Failed, rc=");
       Serial.print(client.state());
@@ -47,6 +67,7 @@ void setup() {
   Serial.begin(115200);
   setupWiFi();
   client.setServer(mqttServer, mqttPort);
+  setupSensors();
 }
 
 void loop() {
@@ -54,4 +75,11 @@ void loop() {
     reconnectMQTT();
   }
   client.loop();
+
+  client.publish(LUX_TOPIC, String(computeLx()).c_str());
+  client.publish(DOOR_TOPIC, readDoor() ? "Open" : "Closed");
+  client.publish(MOTION_TOPIC, String(readAndProcessSensorLines()).c_str());
+
+  // Temp delay for testing
+  delay(1000);
 }

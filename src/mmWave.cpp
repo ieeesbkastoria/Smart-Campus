@@ -37,12 +37,11 @@ void sendHexData(String hexString) {
 }
 
 /*
-The function needs to be called every x amount of seconds in order to
- reads data from the mmWave sensor and processes it line by line and teturn the
-distanse in CM. Currently extracts distance information from lines starting with
-"Range ".
+ The function needs to be called every x amount of seconds in order to
+ read data from the mmWave sensor and processes it line by line and return the
+ distanse in CM. Currently extracts distance information from lines starting
+ with "Range ".
  */
-
 int readAndProcessSensorLines() {
   // Get all available data from sensor
   while (Serial2.available() > 0) {
