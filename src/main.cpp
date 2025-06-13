@@ -80,6 +80,14 @@ void loop() {
   client.publish(DOOR_TOPIC, readDoor() ? "Open" : "Closed");
   client.publish(MOTION_TOPIC, String(readAndProcessSensorLines()).c_str());
 
+  static sensorParameters bme_data{0.0, 0.0, 0.0, 0, 0.0};
+  getReadings(bme_data);
+
+  client.publish(TEMP_TOPIC, String(bme_data.temp).c_str());
+  client.publish(PRESSURE_TOPIC, String(bme_data.atmPressure).c_str());
+  client.publish(HUMIDITY_TOPIC, String(bme_data.humidity).c_str());
+  client.publish(GAS_TOPIC, String(bme_data.gasResistrVal).c_str());
+
   // Temp delay for testing
   delay(1000);
 }
