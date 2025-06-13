@@ -13,11 +13,11 @@
 
 #define PRESSURELVLSEA (1013.25) // Sea level pressure in hPa
 #define SCKPIN                                                                 \
-  10 // Pin on the ESP32 board that the sensor's S(erial)C(loc)K pin is
-     // connected at
+  5 // Pin on the ESP32 board that the sensor's S(erial)C(loc)K pin is
+    // connected at
 #define SDIPIN                                                                 \
-  11 // Pin on the ESP32 board taht the sensor's S(erial)DI (data) pin is
-     // connected at
+  6 // Pin on the ESP32 board taht the sensor's S(erial)DI (data) pin is
+    // connected at
 
 /*
         This struct contains the data that is read and returned by the sensor.

@@ -9,9 +9,9 @@
        // between readings, 1lx precision
 #define EXPECTEDBYTES 2 // Byte amount that we expect to read from the bus
 #define SCLPIN                                                                 \
-  5 // Pin on ESP32 that the sensor's S(erial)CL(ock) Pin is connected to
+  11 // Pin on ESP32 that the sensor's S(erial)CL(ock) Pin is connected to
 #define SDAPIN                                                                 \
-  4 // Pin on ESP32 that the sensor's S(erial)DA(ta) Pin is connected to
+  12 // Pin on ESP32 that the sensor's S(erial)DA(ta) Pin is connected to
 
 // Function to init sensor with
 bool initBH1750();

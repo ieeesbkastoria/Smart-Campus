@@ -6,8 +6,8 @@
 #include <WiFi.h>
 
 // WiFi Credentials
-const char *ssid = "i";
-const char *password = "i";
+const char *ssid = "IEEE Lab";
+const char *password = "IEEE@2025";
 
 // MQTT Broker Settings
 const char *mqttServer = "192.168.69.2";
@@ -96,7 +96,8 @@ void loop() {
 
     publishWithCheck(LUX_TOPIC, String(computeLx()).c_str());
     publishWithCheck(DOOR_TOPIC, readDoor() ? "Open" : "Closed");
-    publishWithCheck(MOTION_TOPIC, String(readAndProcessSensorLines()).c_str());
+    // publishWithCheck(MOTION_TOPIC,
+    // String(readAndProcessSensorLines()).c_str());
 
     sensorParameters bme_data{0.0, 0.0, 0.0, 0, 0.0};
     getReadings(bme_data);
