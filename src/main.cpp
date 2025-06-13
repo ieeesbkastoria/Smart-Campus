@@ -6,11 +6,11 @@
 #include <WiFi.h>
 
 // WiFi Credentials
-constexpr char *ssid = (char *)"i";
-constexpr char *password = (char *)"i";
+const char *ssid = "i";
+const char *password = "i";
 
 // MQTT Broker Settings
-constexpr char *mqttServer = (char *)"192.168.69.2";
+const char *mqttServer = "192.168.69.2";
 const int mqttPort = 1883;
 
 // MQTT Topics Macros
