@@ -1,68 +1,37 @@
-#include "../include/bme_sensor.h"
-#include <Arduino.h> // Required for Serial, millis(), delay()
+#include <Arduino.h>
 #include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include "Adafruit_BME680.h"
+#include "../include/bme_sensor.h"
 
-// Define the BME680 object
-Adafruit_BME680 bme; // Uses I2C
+/*
+ This file incorporates or is based on code from the Adafruit BME680 Library, licensed under the BSD license.
+ Copyright (c) Adafruit Industries.
+*/
 
-bool bmeInit() {
-  Serial.begin(115200);
-  while (!Serial) {
-    delay(10); // wait for serial port to connect.
-  }
-  Serial.println(F("BME680 Sensor Initialization"));
+TwoWire bmeI2CBus = TwoWire(0); // Define specific and separate from other buses for the sensor to communicate to and through the ESP32
+Adafruit_BME680 bmeSensor(&bmeI2CBus); // Define a BME680 type object and instantiate it as an I2C connected variant explicitly
 
-  if (!bme.begin()) { // Default I2C address is 0x77, library may also try 0x76
-    Serial.println(F("Could not find a valid BME680 sensor, check wiring!"));
-    return false;
-  }
+//This function initialises the Wire I2C bus and Sensor through the use of the functions provided in the corresponding libraries
+void initBME680(){
+	bmeI2CBus.begin(SDIPIN, SCKPIN); // Begin I2C Wire for specific to sensor bus
+	bmeSensor.begin(); // Initialise sensor through provided function from Adafruit's library
 
-  // Set up oversampling and filter initialization
-  bme.setTemperatureOversampling(BME680_OS_8X);
-  bme.setHumidityOversampling(BME680_OS_2X);
-  bme.setPressureOversampling(BME680_OS_4X);
-  bme.setIIRFilterSize(BME680_FILTER_SIZE_3);
-  bme.setGasHeater(320, 150); // 320*C for 150 ms
-  Serial.println(F("BME680 initialized successfully."));
-  return true;
+	// Initialise all (or specific) parts of the sensor through provided functions and macros inside the Adafruit library
+	bmeSensor.setTemperatureOversampling(BME680_OS_8X);
+	bmeSensor.setHumidityOversampling(BME680_OS_2X);
+	bmeSensor.setPressureOversampling(BME680_OS_4X);
+	bmeSensor.setIIRFilterSize(BME680_FILTER_SIZE_3);
+	bmeSensor.setGasHeater(320, 150);
 }
 
-void bmeMeasure() {
-  // Tell BME680 to begin measurement.
-  unsigned long endTime = bme.beginReading();
-  if (endTime == 0) {
-    Serial.println(F("Failed to begin reading :("));
-    return;
-  }
-  // Serial.print(F("Reading started at "));
-  // Serial.print(millis());
-  // Serial.print(F(" and will finish at "));
-  // Serial.println(endTime);
-
-  // Obtain measurement results from BME680.
-  if (!bme.endReading()) {
-    Serial.println(F("Failed to complete reading :("));
-    return;
-  }
-
-  // Serial.print(F("Reading completed at "));
-  // Serial.println(millis());
-
-  Serial.print(F("Temperature = "));
-  Serial.print(bme.temperature);
-  Serial.println(F(" *C"));
-
-  Serial.print(F("Pressure = "));
-  Serial.print(bme.pressure / 100.0);
-  Serial.println(F(" hPa"));
-
-  Serial.print(F("Humidity = "));
-  Serial.print(bme.humidity);
-  Serial.println(F(" %"));
-
-  Serial.print(F("Gas = "));
-  Serial.print(bme.gas_resistance / 1000.0);
-  Serial.println(F(" KOhms"));
-
-  Serial.println();
+// This functions gets measurements from the sensor and returns them in a packed struct for easier use
+void getReadings(sensorParameters &readings){
+	bmeSensor.performReading();
+	readings.temp = bmeSensor.temperature;
+	readings.atmPressure = (bmeSensor.pressure / 100.0);
+	readings.humidity = bmeSensor.humidity;
+	readings.gasResistrVal = (bmeSensor.gas_resistance / 1000.0);
+	readings.aprxAlt = bmeSensor.readAltitude(PRESSURELVLSEA);
 }
+

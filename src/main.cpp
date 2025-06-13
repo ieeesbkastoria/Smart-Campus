@@ -1,60 +1,33 @@
-#include "bme_sensor.h"
-#include <PubSubClient.h>
-#include <WiFi.h>
+#include <Arduino.h>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include "Adafruit_BME680.h"
+#include "../include/bme_sensor.h"
 
-// WiFi Credentials
-constexpr char *ssid = "i";
-constexpr char *password = "i";
-
-// MQTT Broker Settings
-constexpr char *mqttServer = "your.broker.address";
-const int mqttPort = 1883;
-
-WiFiClient espClient;
-PubSubClient client(espClient);
-
-void setupWiFi() {
-  delay(100);
-  Serial.print("Connecting to WiFi...");
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("\nWiFi connected!");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
+void setup(){
+	Serial.begin(115200);
+	initBME680();
 }
 
-void reconnectMQTT() {
-  while (!client.connected()) {
-    Serial.print("Connecting to MQTT...");
-    if (client.connect("ESP32Client")) {
-      Serial.println("connected!");
-      client.publish("esp32/status", "Hello from ESP32");
-      client.subscribe("esp32/control");
-    } else {
-      Serial.print("Failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" retrying in 5s...");
-      delay(5000);
-    }
-  }
-}
+void loop(){
+	sensorParameters envScreenings; // Define a struct to contain all the sensor readings we can get from the BME680
+	getReadings(envScreenings); // Call measurement function and pass struct instance to it
 
-void setup() {
-  Serial.begin(115200);
-  setupWiFi();
-  client.setServer(mqttServer, mqttPort);
-  bmeInit();
-}
-
-void loop() {
-  if (!client.connected()) {
-    reconnectMQTT();
-  }
-  client.loop();
-  bmeMeasure();
+	// Print environment variables
+	Serial.print("Temperature: ");
+	Serial.print(envScreenings.temp);
+	Serial.println("*C");
+	Serial.print("Humidity: ");
+	Serial.print(envScreenings.humidity);
+	Serial.println("%");
+	Serial.print("Atmospheric Pressure: ");
+	Serial.print(envScreenings.atmPressure);
+	Serial.println("hPa");
+	Serial.print("Gas Sensor Resistance: ");
+	Serial.print(envScreenings.gasResistrVal);
+	Serial.println("kOhm");
+	Serial.print("Approximated altitude: ");
+	Serial.print(envScreenings.aprxAlt);
+	Serial.println("m");
+	delay(2000);
 }
