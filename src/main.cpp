@@ -4,6 +4,7 @@
 #include "../include/mmWave.h"
 #include <PubSubClient.h>
 #include <WiFi.h>
+#include <cstdio>
 
 // WiFi Credentials
 const char *ssid = "IEEE Lab";
@@ -94,7 +95,10 @@ void loop() {
   if (currentTime - lastPublish >= publishInterval) {
     lastPublish = currentTime;
 
-    publishWithCheck(LUX_TOPIC, String(computeLx()).c_str());
+    char buffer[32];
+
+    snprintf(buffer, sizeof(buffer), "%u", computeLx());
+    publishWithCheck(LUX_TOPIC, buffer);
     publishWithCheck(DOOR_TOPIC, readDoor() ? "Open" : "Closed");
     // publishWithCheck(MOTION_TOPIC,
     // String(readAndProcessSensorLines()).c_str());
@@ -102,10 +106,17 @@ void loop() {
     sensorParameters bme_data{0.0, 0.0, 0.0, 0, 0.0};
     getReadings(bme_data);
 
-    publishWithCheck(TEMP_TOPIC, String(bme_data.temp).c_str());
-    publishWithCheck(PRESSURE_TOPIC, String(bme_data.atmPressure).c_str());
-    publishWithCheck(HUMIDITY_TOPIC, String(bme_data.humidity).c_str());
-    publishWithCheck(GAS_TOPIC, String(bme_data.gasResistrVal).c_str());
+    snprintf(buffer, sizeof(buffer), "%.2f", bme_data.temp);
+    publishWithCheck(TEMP_TOPIC, buffer);
+
+    snprintf(buffer, sizeof(buffer), "%.2f", bme_data.atmPressure);
+    publishWithCheck(PRESSURE_TOPIC, buffer);
+
+    snprintf(buffer, sizeof(buffer), "%.2f", bme_data.humidity);
+    publishWithCheck(HUMIDITY_TOPIC, buffer);
+
+    snprintf(buffer, sizeof(buffer), "%u", bme_data.gasResistrVal);
+    publishWithCheck(GAS_TOPIC, buffer);
   }
 
   // Small delay to prevent watchdog issues
