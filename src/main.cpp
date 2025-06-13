@@ -26,6 +26,9 @@ const int mqttPort = 1883;
 WiFiClient espClient;
 PubSubClient client(espClient);
 
+unsigned long lastPublish = 0;
+const unsigned long publishInterval = 5000; // 5 seconds
+
 static void setupWiFi() {
   delay(100);
   Serial.print("Connecting to WiFi...");
@@ -63,6 +66,17 @@ static void reconnectMQTT() {
   }
 }
 
+// Publish data to mqtt and print error on failure
+static bool publishWithCheck(const char *topic, const char *payload) {
+  if (client.publish(topic, payload)) {
+    return true;
+  } else {
+    Serial.print("Failed to publish to ");
+    Serial.println(topic);
+    return false;
+  }
+}
+
 void setup() {
   Serial.begin(115200);
   setupWiFi();
@@ -76,18 +90,23 @@ void loop() {
   }
   client.loop();
 
-  client.publish(LUX_TOPIC, String(computeLx()).c_str());
-  client.publish(DOOR_TOPIC, readDoor() ? "Open" : "Closed");
-  client.publish(MOTION_TOPIC, String(readAndProcessSensorLines()).c_str());
+  unsigned long currentTime = millis();
+  if (currentTime - lastPublish >= publishInterval) {
+    lastPublish = currentTime;
 
-  static sensorParameters bme_data{0.0, 0.0, 0.0, 0, 0.0};
-  getReadings(bme_data);
+    publishWithCheck(LUX_TOPIC, String(computeLx()).c_str());
+    publishWithCheck(DOOR_TOPIC, readDoor() ? "Open" : "Closed");
+    publishWithCheck(MOTION_TOPIC, String(readAndProcessSensorLines()).c_str());
 
-  client.publish(TEMP_TOPIC, String(bme_data.temp).c_str());
-  client.publish(PRESSURE_TOPIC, String(bme_data.atmPressure).c_str());
-  client.publish(HUMIDITY_TOPIC, String(bme_data.humidity).c_str());
-  client.publish(GAS_TOPIC, String(bme_data.gasResistrVal).c_str());
+    sensorParameters bme_data{0.0, 0.0, 0.0, 0, 0.0};
+    getReadings(bme_data);
 
-  // Temp delay for testing
-  delay(1000);
+    publishWithCheck(TEMP_TOPIC, String(bme_data.temp).c_str());
+    publishWithCheck(PRESSURE_TOPIC, String(bme_data.atmPressure).c_str());
+    publishWithCheck(HUMIDITY_TOPIC, String(bme_data.humidity).c_str());
+    publishWithCheck(GAS_TOPIC, String(bme_data.gasResistrVal).c_str());
+  }
+
+  // Small delay to prevent watchdog issues
+  delay(10);
 }
