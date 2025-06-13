@@ -41,7 +41,7 @@ static void setupSensors() {
   initDoor();
   initBH1750();
   init_mmWave();
-  bmeInit();
+  initBME680();
 }
 
 static void reconnectMQTT() {

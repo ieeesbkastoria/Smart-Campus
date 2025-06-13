@@ -1,17 +1,40 @@
-#ifndef BME_SENSOR_H
-#define BME_SENSOR_H
+#ifndef BME680HEADR
+#define BME680HEADR
 
-#include "Adafruit_BME680.h"
-#include <Adafruit_Sensor.h>
+/*
+ This file incorporates or is based on code from the Adafruit BME680 Library, licensed under the BSD license.
+ Copyright (c) Adafruit Industries.
+*/
+
+#include <Arduino.h>
 #include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include "Adafruit_BME680.h"
 
-// Declare the BME680 object so it can be used in bme_sensor.cpp
-extern Adafruit_BME680 bme;
+#define PRESSURELVLSEA (1013.25) // Sea level pressure in hPa
+#define SCKPIN 10 // Pin on the ESP32 board that the sensor's S(erial)C(loc)K pin is connected at
+#define SDIPIN 11 // Pin on the ESP32 board taht the sensor's S(erial)DI (data) pin is connected at
 
-// Function to initialize the BME680 sensor
-bool bmeInit();
+/*
+	This struct contains the data that is read and returned by the sensor.
+	They are all packed in order to avoid creating functions that return
+	just one value in the readings. The datatypes are the ones I assume
+	are correct and correspond as close to the ones specified in Adafruit's
+	Library, if not stated in specific.
+*/
+typedef struct sParams {
+	float temp; // Ambient temperaure in Celsius.
+	float atmPressure; // Ambient atmospheric pressure in hPa.
+	float humidity; // Humidity reading. Percentage only.
+	uint32_t gasResistrVal; // Gas measurement resistor value. kOhm reading only.
+	float aprxAlt; // Approximated altitude.
+} sensorParameters;
 
-// Function to perform a measurement and print the results
-void bmeMeasure();
 
-#endif // BME_SENSOR_H
+// Initialisation function
+extern void initBME680();
+
+// Measurement function
+extern void getReadings(sensorParameters &readings);
+
+#endif
