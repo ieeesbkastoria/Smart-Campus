@@ -1,0 +1,79 @@
+#include "../include/mmWave.h"
+#include <Arduino.h>
+
+// Original function to send command bytes - KEEP AS IS
+void sendHexData(String hexString) {
+  int hexStringLength = hexString.length();
+  if (hexStringLength % 2 != 0) {
+    Serial.println("Error: Hex string must have an even number of characters.");
+    return;
+  }
+  // Calculate number of bytes and create a buffer
+  int byteCount = hexStringLength / 2;
+  byte hexBytes[byteCount];
+
+  // Convert each pair of hex characters to a byte
+  for (int i = 0; i < hexStringLength; i += 2) {
+    String byteString = hexString.substring(i, i + 2);
+    byte hexByte = (byte)strtoul(byteString.c_str(), NULL, 16);
+    hexBytes[i / 2] = hexByte;
+  }
+
+  // Debug output: print the bytes being sent
+  Serial.print("Sending ");
+  Serial.print(byteCount);
+  Serial.print(" bytes: ");
+
+  for (int i = 0; i < byteCount; i++) {
+    if (hexBytes[i] < 16)
+      Serial.print("0");
+    Serial.print(hexBytes[i], HEX);
+    Serial.print(" ");
+  }
+  Serial.println();
+
+  // Send the bytes to the sensor via Serial2
+  Serial2.write(hexBytes, byteCount);
+}
+
+/*
+ The function needs to be called every x amount of seconds in order to
+ read data from the mmWave sensor and processes it line by line and return the
+ distanse in CM. Currently extracts distance information from lines starting
+ with "Range ".
+ */
+int readAndProcessSensorLines() {
+  // Get all available data from sensor
+  while (Serial2.available() > 0) {
+    // Read a complete line and remove whitespace
+    String line = Serial2.readStringUntil('\n');
+    line.trim();
+
+    // Process lines containing range information
+    if (line.startsWith(RANGE_PREFIX)) {
+      // Extract the distance value (after "Range " prefix)
+      String distanceStr = line.substring(strlen(RANGE_PREFIX));
+      int distance = distanceStr.toInt();
+
+      // Return distance in cm
+      return distance;
+    }
+  }
+}
+
+void init_mmWave() {
+  // start counting millis() from the moment the program starts
+  unsigned long startAttemptTime = millis();
+
+  // Start Serial2 for the HMMD Sensor
+  Serial2.begin(115200, SERIAL_8N1, RX2_PIN, TX2_PIN);
+  Serial.println("Serial2 Initialized on RX:" + String(RX2_PIN) +
+                 ", TX:" + String(TX2_PIN));
+
+  // Send the command to the sensor (only done once)
+  String hex_to_send = "FDFCFBFA0800120000006400000004030201";
+  Serial.println("Sending initial command over Serial2...");
+  sendHexData(hex_to_send);
+  Serial.println("Initial command sent.");
+  Serial.println("Waiting for sensor readings...");
+}
