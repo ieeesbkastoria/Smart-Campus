@@ -35,9 +35,9 @@ typedef struct sParams {
 } sensorParameters;
 
 // Initialisation function
-void initBME680();
+bool initBME680();
 
 // Measurement function
-void getReadings(sensorParameters &readings);
+bool getReadings(sensorParameters &readings);
 
 #endif

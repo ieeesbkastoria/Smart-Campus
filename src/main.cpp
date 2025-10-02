@@ -48,8 +48,10 @@ static void setupWiFi() {
 static void setupSensors() {
   initDoor();
   initBH1750();
-  init_mmWave();
-  initBME680();
+  // init_mmWave();
+  if (!initBME680()) {
+    Serial.println("BME init error");
+  }
 }
 
 static void reconnectMQTT() {
@@ -95,13 +97,13 @@ void loop() {
   if (currentTime - lastPublish >= publishInterval) {
     lastPublish = currentTime;
 
-    char buffer[32];
+    char buffer[1024];
 
     snprintf(buffer, sizeof(buffer), "%u", computeLx());
     publishWithCheck(LUX_TOPIC, buffer);
+
     publishWithCheck(DOOR_TOPIC, readDoor() ? "Open" : "Closed");
-    // publishWithCheck(MOTION_TOPIC,
-    // String(readAndProcessSensorLines()).c_str());
+    publishWithCheck(MOTION_TOPIC, String(readAndProcessSensorLines()).c_str());
 
     sensorParameters bme_data{0.0, 0.0, 0.0, 0, 0.0};
     getReadings(bme_data);
