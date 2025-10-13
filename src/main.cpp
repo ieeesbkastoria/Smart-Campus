@@ -1,6 +1,5 @@
 #include "../include/DoorSensor.h"
 #include "../include/bh1750.h"
-#include "../include/bme_sensor.h"
 #include "../include/mmWave.h"
 #include <PubSubClient.h>
 #include <WiFi.h>
@@ -49,9 +48,6 @@ static void setupSensors() {
   initDoor();
   initBH1750();
   init_mmWave();
-  // if (!initBME680()) {
-  //   Serial.println("BME init error");
-  // }
 }
 
 static void reconnectMQTT() {
@@ -105,21 +101,6 @@ void loop() {
     publishWithCheck(DOOR_TOPIC, readDoor() ? "Open" : "Closed");
 
     publishWithCheck(MOTION_TOPIC, String(readAndProcessSensorLines()).c_str());
-
-    // sensorParameters bme_data{0.0, 0.0, 0.0, 0, 0.0};
-    // getReadings(bme_data);
-
-    // snprintf(buffer, sizeof(buffer), "%.2f", bme_data.temp);
-    // publishWithCheck(TEMP_TOPIC, buffer);
-
-    // snprintf(buffer, sizeof(buffer), "%.2f", bme_data.atmPressure);
-    // publishWithCheck(PRESSURE_TOPIC, buffer);
-
-    // snprintf(buffer, sizeof(buffer), "%.2f", bme_data.humidity);
-    // publishWithCheck(HUMIDITY_TOPIC, buffer);
-
-    // snprintf(buffer, sizeof(buffer), "%u", bme_data.gasResistrVal);
-    // publishWithCheck(GAS_TOPIC, buffer);
   }
 
   // Small delay to prevent watchdog issues
