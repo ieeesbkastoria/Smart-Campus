@@ -1,5 +1,6 @@
 #include "../include/DoorSensor.h"
 #include "../include/bh1750.h"
+#include "../include/dht11.h"
 #include "../include/mmWave.h"
 #include <PubSubClient.h>
 #include <WiFi.h>
@@ -12,6 +13,9 @@ const char *password = "IEEE@2025";
 // MQTT Broker Settings
 const char *mqttServer = "192.168.69.2";
 const int mqttPort = 1883;
+
+// Create DHT11 interface instance
+DHT11Interface dht(DHTPIN);
 
 // MQTT Topics Macros
 #define ESP32_STATUS_TOPIC "esp32/status"
@@ -48,6 +52,7 @@ static void setupSensors() {
   initDoor();
   initBH1750();
   init_mmWave();
+  dht.begin();
 }
 
 static void reconnectMQTT() {
@@ -101,6 +106,24 @@ void loop() {
     publishWithCheck(DOOR_TOPIC, readDoor() ? "Open" : "Closed");
 
     publishWithCheck(MOTION_TOPIC, String(readAndProcessSensorLines()).c_str());
+
+    if (dht.read()) {
+      // Successful reading
+      Serial.print(F("Humidity: "));
+      Serial.print(dht.getHumidity());
+      Serial.println(F("%"));
+
+      Serial.print(F("Temperature: "));
+      Serial.print(dht.getTemperature(), 2);
+      Serial.println("°C");
+
+      Serial.print(F("Heat Index: "));
+      Serial.print(dht.getHeatIndex(), 2);
+      Serial.println("°C");
+    } else {
+      // Failed reading
+      Serial.println(F("Failed to read from DHT sensor!"));
+    }
   }
 
   // Small delay to prevent watchdog issues
