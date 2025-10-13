@@ -26,6 +26,7 @@ DHT11Interface dht(DHTPIN);
 #define PRESSURE_TOPIC "Pressure"
 #define HUMIDITY_TOPIC "Humidity"
 #define GAS_TOPIC "Gas"
+#define FELT_GAS "FeltTemp"
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -51,7 +52,7 @@ static void setupWiFi() {
 static void setupSensors() {
   initDoor();
   initBH1750();
-  init_mmWave();
+  // init_mmWave();
   dht.begin();
 }
 
@@ -105,21 +106,20 @@ void loop() {
 
     publishWithCheck(DOOR_TOPIC, readDoor() ? "Open" : "Closed");
 
-    publishWithCheck(MOTION_TOPIC, String(readAndProcessSensorLines()).c_str());
+    // publishWithCheck(MOTION_TOPIC,
+    // String(readAndProcessSensorLines()).c_str());
 
     if (dht.read()) {
       // Successful reading
-      Serial.print(F("Humidity: "));
-      Serial.print(dht.getHumidity());
-      Serial.println(F("%"));
 
-      Serial.print(F("Temperature: "));
-      Serial.print(dht.getTemperature(), 2);
-      Serial.println("°C");
+      snprintf(buffer, sizeof(buffer), "%.2f", dht.getHumidity());
+      publishWithCheck(HUMIDITY_TOPIC, buffer);
 
-      Serial.print(F("Heat Index: "));
-      Serial.print(dht.getHeatIndex(), 2);
-      Serial.println("°C");
+      snprintf(buffer, sizeof(buffer), "%.2f", dht.getTemperature());
+      publishWithCheck(TEMP_TOPIC, buffer);
+
+      snprintf(buffer, sizeof(buffer), "%.2f", dht.getHeatIndex());
+      publishWithCheck(FELT_TEMP, buffer);
     } else {
       // Failed reading
       Serial.println(F("Failed to read from DHT sensor!"));
