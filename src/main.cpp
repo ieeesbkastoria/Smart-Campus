@@ -1,6 +1,6 @@
 #include "../include/DoorSensor.h"
 #include "../include/bh1750.h"
-#include "../include/bme_sensor.h"
+#include "../include/dht11.h"
 #include "../include/mmWave.h"
 #include <PubSubClient.h>
 #include <WiFi.h>
@@ -14,6 +14,9 @@ const char *password = "IEEE@2025";
 const char *mqttServer = "192.168.69.2";
 const int mqttPort = 1883;
 
+// Create DHT11 interface instance
+DHT11Interface dht(DHTPIN);
+
 // MQTT Topics Macros
 #define ESP32_STATUS_TOPIC "esp32/status"
 #define DOOR_TOPIC "Door"
@@ -23,6 +26,7 @@ const int mqttPort = 1883;
 #define PRESSURE_TOPIC "Pressure"
 #define HUMIDITY_TOPIC "Humidity"
 #define GAS_TOPIC "Gas"
+#define FELT_GAS "FeltTemp"
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -49,9 +53,7 @@ static void setupSensors() {
   initDoor();
   initBH1750();
   // init_mmWave();
-  if (!initBME680()) {
-    Serial.println("BME init error");
-  }
+  dht.begin();
 }
 
 static void reconnectMQTT() {
@@ -103,22 +105,25 @@ void loop() {
     publishWithCheck(LUX_TOPIC, buffer);
 
     publishWithCheck(DOOR_TOPIC, readDoor() ? "Open" : "Closed");
-    publishWithCheck(MOTION_TOPIC, String(readAndProcessSensorLines()).c_str());
 
-    sensorParameters bme_data{0.0, 0.0, 0.0, 0, 0.0};
-    getReadings(bme_data);
+    // publishWithCheck(MOTION_TOPIC,
+    // String(readAndProcessSensorLines()).c_str());
 
-    snprintf(buffer, sizeof(buffer), "%.2f", bme_data.temp);
-    publishWithCheck(TEMP_TOPIC, buffer);
+    if (dht.read()) {
+      // Successful reading
 
-    snprintf(buffer, sizeof(buffer), "%.2f", bme_data.atmPressure);
-    publishWithCheck(PRESSURE_TOPIC, buffer);
+      snprintf(buffer, sizeof(buffer), "%.2f", dht.getHumidity());
+      publishWithCheck(HUMIDITY_TOPIC, buffer);
 
-    snprintf(buffer, sizeof(buffer), "%.2f", bme_data.humidity);
-    publishWithCheck(HUMIDITY_TOPIC, buffer);
+      snprintf(buffer, sizeof(buffer), "%.2f", dht.getTemperature());
+      publishWithCheck(TEMP_TOPIC, buffer);
 
-    snprintf(buffer, sizeof(buffer), "%u", bme_data.gasResistrVal);
-    publishWithCheck(GAS_TOPIC, buffer);
+      snprintf(buffer, sizeof(buffer), "%.2f", dht.getHeatIndex());
+      publishWithCheck(FELT_TEMP, buffer);
+    } else {
+      // Failed reading
+      Serial.println(F("Failed to read from DHT sensor!"));
+    }
   }
 
   // Small delay to prevent watchdog issues
