@@ -1,7 +1,6 @@
-#include "../include/DoorSensor.h"
-#include "../include/bh1750.h"
-#include "../include/dht11.h"
-#include "../include/mmWave.h"
+#include "../include/DoorSensor.hpp"
+#include "../include/bh1750.hpp"
+#include "../include/dht11.hpp"
 #include <PubSubClient.h>
 #include <WiFi.h>
 #include <cstdio>
@@ -25,8 +24,6 @@ DHT11Interface dht(DHTPIN);
 #define TEMP_TOPIC "Temperature"
 #define PRESSURE_TOPIC "Pressure"
 #define HUMIDITY_TOPIC "Humidity"
-#define GAS_TOPIC "Gas"
-#define FELT_GAS "FeltTemp"
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -52,7 +49,6 @@ static void setupWiFi() {
 static void setupSensors() {
   initDoor();
   initBH1750();
-  // init_mmWave();
   dht.begin();
 }
 
@@ -105,9 +101,6 @@ void loop() {
     publishWithCheck(LUX_TOPIC, buffer);
 
     publishWithCheck(DOOR_TOPIC, readDoor() ? "Open" : "Closed");
-
-    // publishWithCheck(MOTION_TOPIC,
-    // String(readAndProcessSensorLines()).c_str());
 
     if (dht.read()) {
       // Successful reading
