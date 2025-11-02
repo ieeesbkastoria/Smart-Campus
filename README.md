@@ -97,7 +97,7 @@ Once devices are connected and publishing data, visualize metrics on the OpenHub
 
 ---
 
-## 💻 Team Credits
+## Team Credits
 
 This project was developed by the **IEEE Student Branch UoWM Kastoria's** Smart-Campus Team:
 
