@@ -37,19 +37,19 @@ The Smart Campus system is built around a **sensor network** powered by ESP32 de
 
 ---
 
-## 🧠 Features
+##  Features
 
-* 🌡️ **Temperature & Humidity** monitoring (DHT11)
-* 💡 **Luminosity** detection (BH1750)
-* 🚶 **Motion** detection
-* 🚪 **Door status** detection
-* 📡 **Wireless communication** via MQTT
-* 🐳 **Dockerized deployment** for easy setup
-* 📖 **Auto-generated documentation** using Doxygen
+*️ **Temperature & Humidity** monitoring (DHT11)
+* **Luminosity** detection (BH1750)
+* **Motion** detection
+* **Door status** detection
+* **Wireless communication** via MQTT
+* **Dockerized deployment** for easy setup
+* **Auto-generated documentation** using Doxygen
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Component                  | Technology                                                        |
 | -------------------------- | ----------------------------------------------------------------- |
@@ -97,7 +97,7 @@ Once devices are connected and publishing data, visualize metrics on the OpenHub
 
 ---
 
-## 👩‍💻 Team Credits
+## 💻 Team Credits
 
 This project was developed by the **IEEE Student Branch UoWM Kastoria's** Smart-Campus Team:
 
@@ -110,13 +110,13 @@ This project was developed by the **IEEE Student Branch UoWM Kastoria's** Smart-
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License** – see the [LICENSE](./LICENSE) file for details.
 
 ---
 
-## 🏫 Acknowledgments
+## Acknowledgments
 
 * IEEE Student Branch [UoWM Kastoria](https://ieee.cs.uowm.gr/)
 * [University of Westen Machedonia](https://www.uowm.gr/)
