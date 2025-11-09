@@ -39,7 +39,7 @@ The Smart Campus system is built around a **sensor network** powered by ESP32 de
 
 ##  Features
 
-*️ **Temperature & Humidity** monitoring (DHT11)
+* **Temperature & Humidity** monitoring (DHT11)
 * **Luminosity** detection (BH1750)
 * **Motion** detection
 * **Door status** detection
