@@ -1,4 +1,4 @@
-#include "../include/dht11.h"
+#include "../include/dht11.hpp"
 
 DHT11Interface::DHT11Interface(uint8_t pin)
     : dht(pin, DHT11), humidity(0), temperature(0), heatIndex(0),

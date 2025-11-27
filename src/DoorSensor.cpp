@@ -1,5 +1,4 @@
-
-#include "../include/DoorSensor.h"
+#include "../include/DoorSensor.hpp"
 #include <Arduino.h>
 
 // Function to initialize the door sensor
