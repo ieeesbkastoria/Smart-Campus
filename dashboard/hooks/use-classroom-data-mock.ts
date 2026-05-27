@@ -1,5 +1,6 @@
 "use client";
 
+// Mocks web socket connection to NodeRed
 import { useState, useEffect, useCallback, useRef } from "react";
 import type { ClassroomData, TemperaturePoint } from "@/lib/types";
 
@@ -43,7 +44,7 @@ function generateInitialHistory(): TemperaturePoint[] {
   return points;
 }
 
-export function useClassroomData(roomId: string = "A1"): ClassroomData {
+export function useClassroomDataMock(roomId: string = "A1"): ClassroomData {
   const [data, setData] = useState<ClassroomData>(() => ({
     roomId,
     roomName: `Classroom ${roomId}`,

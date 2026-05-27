@@ -1,6 +1,6 @@
 "use client";
 
-import { useClassroomData } from "@/hooks/use-classroom-data";
+import { useClassroomDataMock } from "@/hooks/use-classroom-data-mock";
 import { DoorStatusWidget } from "./door-status-widget";
 import { TemperatureWidget } from "./temperature-widget";
 import { HumidityWidget } from "./humidity-widget";
@@ -14,7 +14,7 @@ interface ClassroomDashboardProps {
 }
 
 export function ClassroomDashboard({ config }: ClassroomDashboardProps) {
-  const data = useClassroomData(config.id);
+  const data = useClassroomDataMock(config.id);
   const [currentTime, setCurrentTime] = useState("");
 
   useEffect(() => {
