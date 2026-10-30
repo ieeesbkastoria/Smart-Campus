@@ -44,35 +44,35 @@ int getSensorData(uint8_t *data) {
         This function computes the Lux (Lx) amount
         of light present in a space, using the data
         provided from the getSensorData() function,
-        and returns it to the place that called this
-        func.
+        and writes it to *lx. Returns false (leaving
+        *lx untouched) if the sensor could not be read.
 */
-uint16_t computeLx() {
+bool computeLx(uint16_t *lx) {
 
-  uint8_t buffer[2];
-  uint16_t lxCount;
+  uint8_t buffer[EXPECTEDBYTES];
 
   /*
      Check if we got the right amount of bytes.
      In the dfRobot documentation, the count is 2
   */
-
-  if (2 == getSensorData(buffer)) {
-    // Manipulate bytes in buffer to get reading
-    /*
-        1) Shift high-byte 8 bits to the left to create space for lower byte
-        2) Logical-OR lower-byte with higher-byte to combine them
-        3) Divide with 1.2 to account for internal sensor characteristics
-       (specific to this sensor, check ROHM BH1750FVI datasheet. Should be same
-       or similar with the Fermion BH1750 sensor)
-
-        NOTE: If customising the operation mode, or sensitivity, take account
-       for them by multiplying this result with (MTreg / 69), where MTreg is
-       your custom measurement time register value. The default is 69milisec and
-       is ommited.
-        */
-    lxCount = ((buffer[0] << 8) | buffer[1]) / 1.2;
+  if (EXPECTEDBYTES != getSensorData(buffer)) {
+    return false;
   }
 
-  return lxCount;
+  // Manipulate bytes in buffer to get reading
+  /*
+      1) Shift high-byte 8 bits to the left to create space for lower byte
+      2) Logical-OR lower-byte with higher-byte to combine them
+      3) Divide with 1.2 to account for internal sensor characteristics
+     (specific to this sensor, check ROHM BH1750FVI datasheet. Should be same
+     or similar with the Fermion BH1750 sensor)
+
+      NOTE: If customising the operation mode, or sensitivity, take account
+     for them by multiplying this result with (MTreg / 69), where MTreg is
+     your custom measurement time register value. The default is 69milisec and
+     is ommited.
+      */
+  *lx = ((buffer[0] << 8) | buffer[1]) / 1.2;
+
+  return true;
 }

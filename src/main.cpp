@@ -38,6 +38,9 @@ PubSubClient client(espClient);
 unsigned long lastPublish = 0;
 const unsigned long publishInterval = 5000; // 5 seconds
 
+// Whether the BH1750 acknowledged its configuration command
+bool bh1750Ready = false;
+
 static void setupWiFi() {
   delay(100);
   Serial.print("Connecting to WiFi...");
@@ -55,7 +58,10 @@ static void setupWiFi() {
 
 static void setupSensors() {
   initDoor();
-  initBH1750();
+  bh1750Ready = initBH1750();
+  if (!bh1750Ready) {
+    Serial.println(F("Failed to initialize BH1750 sensor!"));
+  }
   dht.begin();
 }
 
@@ -104,8 +110,20 @@ void loop() {
 
     char buffer[1024];
 
-    snprintf(buffer, sizeof(buffer), "%u", computeLx());
-    publishWithCheck(LUX_TOPIC, buffer);
+    // Retry initialization in case the sensor was unavailable at boot
+    if (!bh1750Ready) {
+      bh1750Ready = initBH1750();
+    }
+
+    uint16_t lx;
+    if (bh1750Ready && computeLx(&lx)) {
+      snprintf(buffer, sizeof(buffer), "%u", lx);
+      publishWithCheck(LUX_TOPIC, buffer);
+    } else {
+      // Failed reading, re-initialize on the next cycle
+      bh1750Ready = false;
+      Serial.println(F("Failed to read from BH1750 sensor!"));
+    }
 
     publishWithCheck(DOOR_TOPIC, readDoor() ? "Open" : "Closed");
 

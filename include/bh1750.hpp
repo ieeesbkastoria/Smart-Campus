@@ -102,12 +102,16 @@ int getSensorData(uint8_t *data);
  * (RESMODEFREQ). For Continuous High-Resolution mode (1 lx precision), the raw
  * value is typically divided by 1.2 to obtain lux.
  *
- * @return Illuminance value in lux as a 16-bit unsigned integer
- * @retval 0 if the sensor has not been read or data is unavailable
+ * Internally calls getSensorData() to fetch a fresh reading.
+ *
+ * @param[out] lx Pointer to where the illuminance in lux is stored on success
+ *
+ * @return @c true if a reading was obtained and written to @p lx
+ * @return @c false if the I2C read failed (e.g., sensor disconnected); @p lx
+ *         is left unchanged
  *
  * @pre initBH1750() must have been called successfully
- * @pre getSensorData() should have been called to populate internal sensor
- * buffer
+ * @pre @p lx must point to a valid uint16_t
  *
  * @note This function assumes the sensor is operating in RESMODEFREQ mode.
  *       If the operation mode changes, the conversion factor may need
@@ -115,6 +119,6 @@ int getSensorData(uint8_t *data);
  *
  * @see getSensorData(), RESMODEFREQ
  */
-uint16_t computeLx();
+bool computeLx(uint16_t *lx);
 
 #endif // BH1750_H
