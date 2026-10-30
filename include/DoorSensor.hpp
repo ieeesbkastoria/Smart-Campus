@@ -25,25 +25,6 @@
 #include <Arduino.h>
 
 /**
- * @defgroup DoorSensor_Config Door Sensor Configuration Constants
- * @{
- */
-
-/**
- * @brief GPIO pin number connected to the door sensor
- *
- * This digital pin reads the state of the door sensor switch. The pin should be
- * configured as an INPUT with appropriate pull-up or pull-down resistor to
- * ensure stable and noise-free readings.
- *
- * @note Ensure this pin is not used by other peripherals
- * @note Add debouncing logic if the sensor exhibits switch bounce
- */
-#define DOOR_SENSOR_PIN 13
-
-/** @} */
-
-/**
  * @brief Initialize the door sensor
  *
  * Configures the GPIO pin (DOOR_SENSOR_PIN) as a digital input and prepares

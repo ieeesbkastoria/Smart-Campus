@@ -40,20 +40,6 @@
 /** @brief Expected number of bytes to read from I2C bus */
 #define EXPECTEDBYTES 2
 
-/**
- * @brief GPIO pin for I2C Serial Clock (SCL) on ESP32
- *
- * This pin connects to the BH1750 sensor's SCL line for I2C clock signal
- */
-#define SCLPIN 11
-
-/**
- * @brief GPIO pin for I2C Serial Data (SDA) on ESP32
- *
- * This pin connects to the BH1750 sensor's SDA line for I2C data signal
- */
-#define SDAPIN 12
-
 /** @} */
 
 /**

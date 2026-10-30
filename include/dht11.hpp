@@ -17,21 +17,6 @@
 #include "DHT.h"
 
 /**
- * @defgroup DHT11_Config DHT11 Configuration Constants
- * @{
- */
-
-/**
- * @brief GPIO pin number connected to the DHT11 sensor's data line
- *
- * This digital pin receives the single-wire protocol data from the DHT11
- * sensor. Ensure this pin is configured as an input on the microcontroller.
- */
-#define DHTPIN 4
-
-/** @} */
-
-/**
  * @class DHT11Interface
  * @brief Object-oriented interface for DHT11 temperature and humidity sensor
  *

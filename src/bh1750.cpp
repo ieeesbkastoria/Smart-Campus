@@ -1,4 +1,5 @@
 #include "../include/bh1750.hpp"
+#include "../include/config.h"
 
 #include <Arduino.h>
 #include <Wire.h>

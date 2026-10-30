@@ -1,5 +1,6 @@
 #include "../include/DoorSensor.hpp"
 #include "../include/bh1750.hpp"
+#include "../include/config.h"
 #include "../include/dht11.hpp"
 #include <PubSubClient.h>
 #include <WiFi.h>
@@ -9,34 +10,19 @@
 #if __has_include("../include/secrets.h")
 #include "../include/secrets.h"
 #else
-#error "Missing include/secrets.h: copy include/secrets.example.h and fill in your WiFi credentials"
+#error "Missing include/secrets.h, copy it from include/secrets.example.h"
 #endif
 
 const char *ssid = WIFI_SSID;
 const char *password = WIFI_PASSWORD;
 
-// MQTT Broker Settings
-const char *mqttServer = "192.168.69.2";
-const int mqttPort = 1883;
-
 // Create DHT11 interface instance
 DHT11Interface dht(DHTPIN);
-
-// MQTT Topics Macros
-#define ESP32_STATUS_TOPIC "esp32/status"
-#define DOOR_TOPIC "Door"
-#define LUX_TOPIC "Lx"
-#define MOTION_TOPIC "Motion"
-#define TEMP_TOPIC "Temperature"
-#define FELT_TEMP "FeltTemperature"
-#define PRESSURE_TOPIC "Pressure"
-#define HUMIDITY_TOPIC "Humidity"
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 unsigned long lastPublish = 0;
-const unsigned long publishInterval = 5000; // 5 seconds
 
 // Whether the BH1750 acknowledged its configuration command
 bool bh1750Ready = false;
@@ -74,8 +60,10 @@ static void reconnectMQTT() {
     } else {
       Serial.print("Failed, rc=");
       Serial.print(client.state());
-      Serial.println(" retrying in 5s...");
-      delay(5000);
+      Serial.print(" retrying in ");
+      Serial.print(MQTT_RETRY_INTERVAL_MS / 1000);
+      Serial.println("s...");
+      delay(MQTT_RETRY_INTERVAL_MS);
     }
   }
 }
@@ -94,7 +82,7 @@ static bool publishWithCheck(const char *topic, const char *payload) {
 void setup() {
   Serial.begin(115200);
   setupWiFi();
-  client.setServer(mqttServer, mqttPort);
+  client.setServer(MQTT_SERVER, MQTT_PORT);
   setupSensors();
 }
 
@@ -105,7 +93,7 @@ void loop() {
   client.loop();
 
   unsigned long currentTime = millis();
-  if (currentTime - lastPublish >= publishInterval) {
+  if (currentTime - lastPublish >= PUBLISH_INTERVAL_MS) {
     lastPublish = currentTime;
 
     char buffer[1024];
