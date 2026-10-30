@@ -2,6 +2,9 @@
 .vscode
 .env
 
+# Local WiFi credentials (template: include/secrets.example.h)
+include/secrets.h
+
 # Lsp configs
 compile_commands.json
 .ccls-cache/

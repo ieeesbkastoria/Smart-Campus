@@ -5,9 +5,15 @@
 #include <WiFi.h>
 #include <cstdio>
 
-// WiFi Credentials
-const char *ssid = "IEEE Lab";
-const char *password = "IEEE@2025";
+// WiFi Credentials (see include/secrets.example.h)
+#if __has_include("../include/secrets.h")
+#include "../include/secrets.h"
+#else
+#error "Missing include/secrets.h: copy include/secrets.example.h and fill in your WiFi credentials"
+#endif
+
+const char *ssid = WIFI_SSID;
+const char *password = WIFI_PASSWORD;
 
 // MQTT Broker Settings
 const char *mqttServer = "192.168.69.2";

@@ -79,6 +79,14 @@ cd smart-campus
 Open the project in VS Code with the **PlatformIO** extension installed.
 Adjust `platformio.ini` as needed for your ESP32 board.
 
+Create your local WiFi credentials file (it is git-ignored, never commit it):
+
+```bash
+cp include/secrets.example.h include/secrets.h
+```
+
+Then edit `include/secrets.h` and set `WIFI_SSID` and `WIFI_PASSWORD`.
+
 ### 3. Flash the firmware
 
 ```bash
