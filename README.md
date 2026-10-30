@@ -114,7 +114,6 @@ This project was developed by the **IEEE Student Branch UoWM Kastoria's** Smart-
 | [Dimitrios Papakonstantinou](https://www.linkedin.com/in/dimitrios-papakonstantinou-44a7672b3/)  | Project Lead /  Software Developer  |
 | [George Tingos](https://www.linkedin.com/in/george-tingos-6288a0389?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app) | Hardware Design              |
 | [Panagiotis Kavakopoulos](https://www.linkedin.com/in/panagiotis-kavakopoulos/) | Software/Hardware Developer              |
-| [Panagiotis Kavakopoulos](https://www.linkedin.com/in/panagiotis-kavakopoulos/) | Software/Hardware Developer              |
 | [Themelis Kokovidis](https://www.linkedin.com/in/themelis-kokovidis-445233391/) | Software/Hardware Developer              |
 
 > Special thanks to our IEEE Student Branch and University mentors for their support and guidance.
